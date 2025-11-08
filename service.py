@@ -11,20 +11,13 @@ app = FastAPI(title="Ecommerce API")
 DB_USER = os.environ.get("DB_USER", "postgres")
 DB_PASS = os.environ.get("DB_PASS", "password")
 DB_NAME = os.environ.get("DB_NAME", "postgres")
-DB_HOST = os.environ.get("DB_HOST")  # Only used locally
 CLOUD_SQL_CONNECTION_NAME = os.environ.get("CLOUD_SQL_CONNECTION_NAME")  # PROJECT:REGION:INSTANCE
 
 # -------------------------------
 # Determine connection URL
 # -------------------------------
-if CLOUD_SQL_CONNECTION_NAME:
-    # Production / Cloud Run: connect via Unix socket
-    DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@/{DB_NAME}?host=/cloudsql/{CLOUD_SQL_CONNECTION_NAME}"
-
-else:
-    # Local development: connect via TCP (Cloud SQL Auth Proxy)
-    host = DB_HOST or "127.0.0.1"
-    DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{host}/{DB_NAME}"
+# Production / Cloud Run: connect via Unix socket
+DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@/{DB_NAME}?host=/cloudsql/{CLOUD_SQL_CONNECTION_NAME}"
 
 # -------------------------------
 # SQLAlchemy engine
@@ -44,7 +37,7 @@ class Product(BaseModel):
 # -------------------------------
 @app.get("/")
 def home():
-    return {"message": "Hello from FastAPI + Cloud SQL!"}
+    return {"message": "Hello from FastAPI + Cloud SQL!", "user": DB_USER, "password": DB_PASS, "name": DB_NAME, "cloud_sql": CLOUD_SQL_CONNECTION_NAME}
 
 @app.get("/products", response_model=list[Product])
 def get_products():
