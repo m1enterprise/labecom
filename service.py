@@ -10,7 +10,7 @@ def home():
 def products():
     return jsonify([
         {"id": 1, "name": "Shoes", "price": 100},
-        {"id": 2, "name": "Hat", "price": 40}
+        {"id": 2, "name": "Hat", "price": 40},
         {"id": 3, "name": "Tshirt", "price": 140}
     ])
 
