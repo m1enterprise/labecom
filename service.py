@@ -51,8 +51,8 @@ def get_products():
         raise HTTPException(status_code=500, detail=str(e))
 
 # GET by id
-@app.get("/products/{id}", response_model=list[Product])
-def get_product_by_id(id):
+@app.get("/products/{id}", response_model=Product)
+def get_product_by_id(id: int):
     try:
         with engine.connect() as conn:
             result = conn.execute(
@@ -60,12 +60,17 @@ def get_product_by_id(id):
                 {"id": id}
             )
             row = result.fetchone()
+
             if row is None:
                 raise HTTPException(status_code=404, detail="Product not found")
+
             product = dict(row._mapping)
+
         return product
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 # POST
 # @app.post("/products", response_model=Product)
