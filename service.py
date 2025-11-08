@@ -1,19 +1,29 @@
-from flask import Flask, jsonify
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-app = Flask(__name__)
+app = FastAPI(title="Ecommerce Backend")
 
-@app.route("/")
-def home():
-    return "Hello from Python backend on Cloud Run!"
+# przykład modelu danych
+class Product(BaseModel):
+    id: int
+    name: str
+    price: float
 
-@app.route("/products")
-def products():
-    return jsonify([
-        {"id": 1, "name": "Shoes", "price": 100},
-        {"id": 2, "name": "Hat", "price": 40},
-        {"id": 3, "name": "Tshirt", "price": 140},
-        {"id": 4, "name": "Test", "price": 110}
-    ])
+# endpoint testowy
+@app.get("/")
+def read_root():
+    return {"status": "ok", "service": "backend"}
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+# endpoint: lista produktów
+@app.get("/products")
+def list_products():
+    data = [
+        Product(id=1, name="Shoes", price=100),
+        Product(id=2, name="Hat", price=40)
+    ]
+    return data
+
+# endpoint: pobranie jednego produktu
+@app.get("/products/{product_id}")
+def get_product(product_id: int):
+    return {"id": product_id, "name": "Demo", "price": 50}

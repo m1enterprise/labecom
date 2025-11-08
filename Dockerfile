@@ -7,4 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "service:app"]
+# Cloud Run potrzebuje portu 8080
+ENV PORT=8080
+
+CMD ["uvicorn", "service:app", "--host", "0.0.0.0", "--port", "8080"]
