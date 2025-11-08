@@ -44,7 +44,7 @@ def get_products():
     try:
         with engine.connect() as conn:
             result = conn.execute(text("SELECT id, name, price FROM products LIMIT 10"))
-            rows = [dict(row) for row in result]
+            rows = [dict(row._mapping) for row in result]
         return rows
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
