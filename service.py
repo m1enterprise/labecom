@@ -37,7 +37,7 @@ class Product(BaseModel):
 # -------------------------------
 @app.get("/")
 def home():
-    return {"message": "service.py API", "info": "/, /products, /products/id"}
+    return {"message": "service.py API"}
 
 # GET
 @app.get("/products", response_model=list[Product])
@@ -68,24 +68,24 @@ def get_product_by_id(id):
         raise HTTPException(status_code=500, detail=str(e))
 
 # POST
-@app.post("/products", response_model=Product)
-def create_product(product: Product = Body(..., example={"name": "T-Shirt", "price": 25.0})):
-    try:
-        with engine.connect() as conn:
-            # If ID is auto-generated, don't insert it
-            result = conn.execute(
-                text(
-                    "INSERT INTO products (name, price) "
-                    "VALUES (:name, :price) "
-                    "RETURNING id, name, price"
-                ),
-                {"name": product.name, "price": product.price}
-            )
-            # Fetch the inserted row
-            inserted_row = result.fetchone()
-            if inserted_row is None:
-                raise HTTPException(status_code=500, detail="Failed to insert product")
-            new_product = dict(inserted_row._mapping)
-        return new_product
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# @app.post("/products", response_model=Product)
+# def create_product(product: Product = Body(..., example={"name": "T-Shirt", "price": 25.0})):
+#     try:
+#         with engine.connect() as conn:
+#             # If ID is auto-generated, don't insert it
+#             result = conn.execute(
+#                 text(
+#                     "INSERT INTO products (name, price) "
+#                     "VALUES (:name, :price) "
+#                     "RETURNING id, name, price"
+#                 ),
+#                 {"name": product.name, "price": product.price}
+#             )
+#             # Fetch the inserted row
+#             inserted_row = result.fetchone()
+#             if inserted_row is None:
+#                 raise HTTPException(status_code=500, detail="Failed to insert product")
+#             new_product = dict(inserted_row._mapping)
+#         return new_product
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
