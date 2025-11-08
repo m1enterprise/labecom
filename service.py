@@ -19,10 +19,8 @@ CLOUD_SQL_CONNECTION_NAME = os.environ.get("CLOUD_SQL_CONNECTION_NAME")  # PROJE
 # -------------------------------
 if CLOUD_SQL_CONNECTION_NAME:
     # Production / Cloud Run: connect via Unix socket
-    DATABASE_URL = (
-        f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@/{DB_NAME}"
-        f"?host=/cloudsql/{CLOUD_SQL_CONNECTION_NAME}"
-    )
+    DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@/{DB_NAME}?host=/cloudsql/{CLOUD_SQL_CONNECTION_NAME}"
+
 else:
     # Local development: connect via TCP (Cloud SQL Auth Proxy)
     host = DB_HOST or "127.0.0.1"
