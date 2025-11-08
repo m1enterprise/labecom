@@ -79,7 +79,7 @@ def get_product_by_id(id: int):
 @app.post("/products", response_model=Product)
 def create_product(product: ProductCreate):
     try:
-        with engine.connect() as conn:
+        with engine.begin() as conn:  # <-- automatically COMMITs
             result = conn.execute(
                 text(
                     "INSERT INTO products (name, price) "
@@ -88,11 +88,12 @@ def create_product(product: ProductCreate):
                 ),
                 {"name": product.name, "price": product.price}
             )
-            inserted_row = result.fetchone()
-            if inserted_row is None:
+
+            row = result.fetchone()
+            if row is None:
                 raise HTTPException(status_code=500, detail="Failed to insert product")
 
-            new_product = dict(inserted_row._mapping)
+            new_product = dict(row._mapping)
 
         return new_product
 
